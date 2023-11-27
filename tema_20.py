@@ -39,20 +39,12 @@ def transferCsvRowsToDb(csvFile):
     reader = csv.DictReader(f, dialect="excel")
 
     for row in reader:
-        jud = repr(row['JUDET'])
-        cn = repr(row['CATEGORIE_NATIONALA'])
-        cc = repr(row['CATEGORIE_COMUNITARA'])
-        m = repr(row['MARCA'])
-        dc = repr(row['DESCRIERE_COMERCIALA'])
-        vn = repr(row['VALUE_NAME'])
-        tv = repr(row['TOTAL_VEHICULE'])
-        # c.execute(f"INSERT INTO {carTable} (Judet, Categorie_Nationala, Categorie_Comunitara, Marca, Descriere_Comerciala, Combustibil, Nr_Vehicule) VALUES ({jud}, {cn}, {cc}, {m}, {dc}, {vn}, {tv});")
         c.execute(f"INSERT INTO {carTable} (Judet, Categorie_Nationala, Categorie_Comunitara, Marca, Descriere_Comerciala, Combustibil, Nr_Vehicule) VALUES ({repr(row['JUDET'])}, {repr(row['CATEGORIE_NATIONALA'])}, {repr(row['CATEGORIE_COMUNITARA'])}, {repr(row['MARCA'])}, {repr(row['DESCRIERE_COMERCIALA'])}, {repr(row['VALUE_NAME'])}, {repr(row['TOTAL_VEHICULE'])});")
     
     dbcon.commit()
     f.close()
 
-transferCsvRowsToDb(csvFile)
+
 
 # odata completata tabela, scrieti functii sql (scrieti-le ca functii python) care calculeaza: 
 #afisari:
@@ -60,17 +52,20 @@ transferCsvRowsToDb(csvFile)
     #afiseaza toate masinile dintr-o categorie anume 
     #afiseaza toate masinile care sunt mai multe de 10 
 def getCarsFromCounty(county):
-    return
+    c.execute(f"SELECT * FROM {carTable} WHERE `Judet` = '{county}'")
+    return c.fetchall()
 
 
 
 def getCarsFromCategory(category):
-    return
+    c.execute(f"SELECT * FROM {carTable} WHERE `Categorie_Nationala` = '{category}'")
+    return c.fetchall()
 
 
 
 def getMoreCarsThan(numero):
-    return 0
+    c.execute(f"SELECT * FROM {carTable} WHERE `Nr_vehicule` > {numero}")
+    return c.fetchall()
 
 
 
@@ -132,3 +127,8 @@ def changeToOltenia():
 
 def addPopularColumn():
     pass
+
+
+#cleanup
+c.close()
+dbcon.close()
