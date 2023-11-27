@@ -130,35 +130,37 @@ def jsonToCsv(inFile, outfile):
 
 
 
-#calcule
-    #calculeaza numarul total de masini din tara 
-    #calculeaza numarul total de masini dintr-un judet primit ca parametru
-    #calculeaza numarul total de masini dintr-o anumita categorie nationala 
-    #calculeaza numarul total de masini in functie de tipul de combustibil pe care il folosesc
-def totalCars() -> int:
-    return 0
-
-
-
-def totalInCounty(county) -> int:
-    return 0 
+# calcule
+    # calculeaza numarul total de masini din tara 
+    # calculeaza numarul total de masini dintr-un judet primit ca parametru
+    # calculeaza numarul total de masini dintr-o anumita categorie nationala 
+    # calculeaza numarul total de masini in functie de tipul de combustibil pe care il folosesc
+def totalCars(county="All") -> int:
+    if county == "All":
+        c.execute(f"SELECT SUM(`Nr_Vehicule`) FROM {carTable}")
+    else:
+        c.execute(f"SELECT SUM(`Nr_Vehicule`) FROM {carTable} WHERE `Judet` LIKE '{county}'")
+    return c.fetchone()[0]
 
 
 
 def totalInCategory(category) -> int:
-    return 0
+    c.execute(f"SELECT SUM(`Nr_Vehicule`) FROM {carTable} WHERE `Categorie_Nationala` = '{category}'")
+    return c.fetchone()[0]
 
 
 
 def totalByFuel(fuel) -> int:
-    return 0
+    c.execute(f"SELECT SUM(`Nr_Vehicule`) FROM {carTable} WHERE `Combustibil` LIKE '{fuel}'")
+    return c.fetchone()[0]
 
 
 
 #modificare 
-   #modificati valorile a.i. toate intrarile care contin denumirea benzina sa ramana cu valoarea benzina 
-   #modificati valorile a.i. in locul judetelor "dolj","olt","gorj","valcea","mehedinti" sa apara oltenia 
-   #adaugati o coloana care sa contina valoarea "popular" sau "nepopular" in functie de nr de vehicule din acea categorie (un vehicul e popular daca exista mai mult de 100)
+   # modificati valorile a.i. toate intrarile care contin denumirea benzina sa ramana cu valoarea benzina 
+   # modificati valorile a.i. in locul judetelor "dolj","olt","gorj","valcea","mehedinti" sa apara oltenia 
+   # adaugati o coloana care sa contina valoarea "popular" sau "nepopular" in functie de nr de vehicule din acea categorie 
+   # (un vehicul e popular daca exista mai mult de 100)
 def setFuelToGas():
     pass
 
