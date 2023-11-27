@@ -32,17 +32,24 @@ c = dbcon.cursor()
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);"""
 
 
+def csvToDictList(infile) -> list:
+    f = open(infile, "r", encoding="utf-8-sig")
+    reader = csv.DictReader(f, dialect="excel")
+    entries = []
+    
+    for row in reader:
+        entries.append(row)
+
+    f.close()
+    return entries
 
 # scrieti o functie care parcurge acel fisier si insereaza in baza de date fiecare inregistrare din tabela
-def transferCsvRowsToDb(csvFile):
-    f = open(csvFile, "r", encoding="utf-8-sig")
-    reader = csv.DictReader(f, dialect="excel")
-
-    for row in reader:
-        c.execute(f"INSERT INTO {carTable} (Judet, Categorie_Nationala, Categorie_Comunitara, Marca, Descriere_Comerciala, Combustibil, Nr_Vehicule) VALUES ({repr(row['JUDET'])}, {repr(row['CATEGORIE_NATIONALA'])}, {repr(row['CATEGORIE_COMUNITARA'])}, {repr(row['MARCA'])}, {repr(row['DESCRIERE_COMERCIALA'])}, {repr(row['VALUE_NAME'])}, {repr(row['TOTAL_VEHICULE'])});")
+def transferCsvRowsToDb(infile):
+    data = csvToDictList(infile)
+    for d in data:
+        c.execute(f"INSERT INTO {carTable} (Judet, Categorie_Nationala, Categorie_Comunitara, Marca, Descriere_Comerciala, Combustibil, Nr_Vehicule) VALUES ({repr(d['JUDET'])}, {repr(d['CATEGORIE_NATIONALA'])}, {repr(d['CATEGORIE_COMUNITARA'])}, {repr(d['MARCA'])}, {repr(d['DESCRIERE_COMERCIALA'])}, {repr(d['VALUE_NAME'])}, {repr(d['TOTAL_VEHICULE'])});")
     
     dbcon.commit()
-    f.close()
 
 
 
@@ -74,17 +81,52 @@ def getMoreCarsThan(numero):
     #converteste fisierul in fisier text unde fiecare linie este de tipul "Vehicul de tip <CATEGORIE_NATIONALA> din judetul <JUDET> marca <MARCA>: <TOTALVEHICULE> <TOTAL
     #converteste un fisier json primit ca parametru in fisier csv (pe caz general)
 def csvToJson(infile, outfile):
-    pass
+    data = csvToDictList(infile)
+    jsonObj = json.dumps(data, )
+
+    j = open(outfile, "w")
+    j.write(jsonObj)
+    j.close()
 
 
 
 def csvToTxt(infile, outfile):
-    pass
+    data = csvToDictList(infile)
+    tfile = open(outfile, "w")
+    redata = {}
+
+    for d in data:
+        if d["JUDET"] in redata:
+            if d["CATEGORIE_NATIONALA"] in redata[d["JUDET"]]:
+                if d["MARCA"] in redata[d["JUDET"]][d["CATEGORIE_NATIONALA"]]:
+                    redata[d["JUDET"]][d["CATEGORIE_NATIONALA"]][d["MARCA"]] += int(d["TOTAL_VEHICULE"])
+                else:
+                    redata[d["JUDET"]][d["CATEGORIE_NATIONALA"]][d["MARCA"]] = int(d["TOTAL_VEHICULE"])
+            else:
+                redata[d["JUDET"]][d["CATEGORIE_NATIONALA"]] = {}
+        else:
+            redata[d["JUDET"]] = {}
+
+    for jud in redata:
+        for cat in redata[jud]:
+            for m in redata[jud][cat]:
+                tfile.write(f"Vehicul de tip {cat} din judetul {jud} marca {m}: {redata[jud][cat][m]}\n")
+    tfile.close()
 
 
 
 def jsonToCsv(inFile, outfile):
-    pass
+    j = open(inFile, "r")
+    c = open(outfile, "w")
+    indata = json.load(j)
+    headers = list(indata[0].keys())
+    outdata = csv.DictWriter(c, fieldnames=headers)
+
+    outdata.writeheader()
+    outdata.writerows(indata)
+
+    c.close()
+    j.close()
 
 
 
