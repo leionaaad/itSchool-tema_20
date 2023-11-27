@@ -1,4 +1,5 @@
 import csv
+import json
 import mysql.connector as mc
 
 # Settings
@@ -33,19 +34,48 @@ c = dbcon.cursor()
 
 
 # scrieti o functie care parcurge acel fisier si insereaza in baza de date fiecare inregistrare din tabela
+def transferCsvRowsToDb(csvFile):
+    pass
+
+
+
 # odata completata tabela, scrieti functii sql (scrieti-le ca functii python) care calculeaza: 
-
-
 #afisari:
     #afiseaza toate masinile dintr-un judet anume 
     #afiseaza toate masinile dintr-o categorie anume 
     #afiseaza toate masinile care sunt mai multe de 10 
+def getCarsFromCounty(county):
+    return
+
+
+
+def getCarsFromCategory(category):
+    return
+
+
+
+def getMoreCarsThan(numero):
+    return 0
+
 
 
 #conversii 
     #converteste fisierul din csv in json 
     #converteste fisierul in fisier text unde fiecare linie este de tipul "Vehicul de tip <CATEGORIE_NATIONALA> din judetul <JUDET> marca <MARCA>: <TOTALVEHICULE> <TOTAL
     #converteste un fisier json primit ca parametru in fisier csv (pe caz general)
+def csvToJson(infile, outfile):
+    pass
+
+
+
+def csvToTxt(infile, outfile):
+    pass
+
+
+
+def jsonToCsv(inFile, outfile):
+    pass
+
 
 
 #calcule
@@ -53,9 +83,37 @@ c = dbcon.cursor()
     #calculeaza numarul total de masini dintr-un judet primit ca parametru
     #calculeaza numarul total de masini dintr-o anumita categorie nationala 
     #calculeaza numarul total de masini in functie de tipul de combustibil pe care il folosesc
+def totalCars() -> int:
+    return 0
+
+
+
+def totalInCounty(county) -> int:
+    return 0 
+
+
+
+def totalInCategory(category) -> int:
+    return 0
+
+
+
+def totalByFuel(fuel) -> int:
+    return 0
+
 
 
 #modificare 
    #modificati valorile a.i. toate intrarile care contin denumirea benzina sa ramana cu valoarea benzina 
    #modificati valorile a.i. in locul judetelor "dolj","olt","gorj","valcea","mehedinti" sa apara oltenia 
    #adaugati o coloana care sa contina valoarea "popular" sau "nepopular" in functie de nr de vehicule din acea categorie (un vehicul e popular daca exista mai mult de 100)
+def setFuelToGas():
+    pass
+
+
+def changeToOltenia():
+    pass
+
+
+def addPopularColumn():
+    pass
